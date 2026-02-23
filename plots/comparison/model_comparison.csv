@@ -1,0 +1,6 @@
+Model,ROC-AUC,Recall,Precision,F1-Score,Train Time (s)
+LightGBM,0.7771,0.1253,0.4365,0.1947,34.2
+CatBoost,0.7738,0.1148,0.4331,0.1815,84.1
+XGBoost,0.7583,0.714,0.1588,0.2598,26.2
+RandomForest,0.7375,0.1732,0.2749,0.2125,118.8
+LogisticRegression,0.6519,0.6137,0.1219,0.2034,80.6

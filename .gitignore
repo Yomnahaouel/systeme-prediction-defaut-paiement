@@ -1,1 +1,37 @@
+# Large data files
 data/
+
+# Model files (too large for GitHub)
+models/*.joblib
+*.joblib
+
+# MLflow artifacts and model files
+mlruns/
+catboost_info/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment files
+.env
+.venv
+env/
+venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large model outputs  
+*.pkl
+*.model
+*.bin
