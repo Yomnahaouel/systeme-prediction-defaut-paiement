@@ -1,0 +1,21 @@
+Optimized Ensemble Configuration
+==================================================
+
+Weighting Strategy: Best2-only
+Weights:
+  LightGBM:  0.0000
+  XGBoost:   0.4000
+  CatBoost:  0.6000
+
+Optimal Threshold: 0.5
+
+Final Metrics:
+  AUC:       0.7691
+  F1-Score:  0.3132
+  Precision: 0.2189
+  Recall:    0.5501
+
+Individual Model AUCs:
+  LGB: 0.7550
+  XGB: 0.7627
+  CAT: 0.7707

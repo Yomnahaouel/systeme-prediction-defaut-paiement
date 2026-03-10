@@ -1,0 +1,33 @@
+Advanced Training Pipeline Results
+==================================================
+
+Number of features: 200
+Number of folds: 5
+
+Model Performance (Test AUC):
+  LGB: 0.7550
+  XGB: 0.7627
+  CAT: 0.7707
+  STACKED: 0.7704
+
+Top 20 Features:
+  - EXT_SOURCE_MEAN
+  - CREDIT_TERM
+  - DAYS_ID_PUBLISH
+  - PREV_AMT_CREDIT_MEAN
+  - DAYS_REGISTRATION
+  - ORGANIZATION_TYPE_TARGET_ENC
+  - EXT_SOURCE_WEIGHTED
+  - AMT_ANNUITY
+  - EXT_SOURCE_STD
+  - DAYS_LAST_PHONE_CHANGE
+  - GOODS_CREDIT_RATIO
+  - EMPLOYMENT_RATIO
+  - EXT_SOURCE_PROD
+  - DEBT_BURDEN
+  - REGION_POPULATION_RELATIVE
+  - EXT_SOURCE_MAX
+  - EXT_SOURCE_MIN
+  - CREDIT_PER_EMPLOYMENT_YEAR
+  - ANNUITY_INCOME_RATIO
+  - DAYS_BIRTH

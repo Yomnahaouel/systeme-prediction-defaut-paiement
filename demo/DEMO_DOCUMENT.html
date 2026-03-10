@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Prediction System - Demo Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .cover {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+        .cover h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .cover .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        .cover .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        .cover .stat {
+            text-align: center;
+        }
+        .cover .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .cover .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #1e3c72;
+            border-bottom: 3px solid #2a5298;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .section h3 {
+            color: #444;
+            margin: 20px 0 10px;
+        }
+        .screenshot {
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #1e3c72;
+            color: white;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .info {
+            background: #cce5ff;
+            border-left-color: #007bff;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
+        }
+        @media print {
+            .section {
+                page-break-inside: avoid;
+            }
+            .cover {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Page -->
+    <div class="cover">
+        <h1>🏦 Credit Risk Prediction System</h1>
+        <p class="subtitle">Machine Learning Pipeline for Loan Default Prediction</p>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">0.786</div>
+                <div class="stat-label">ROC-AUC Score</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">102</div>
+                <div class="stat-label">Features</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">307K</div>
+                <div class="stat-label">Training Samples</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">7</div>
+                <div class="stat-label">API Endpoints</div>
+            </div>
+        </div>
+        <p style="margin-top: 40px; opacity: 0.7;">
+            Demo Documentation | March 2026<br>
+            Built by 7afnawi for Hefny
+        </p>
+    </div>
+
+    <!-- Section 1: Overview -->
+    <div class="section">
+        <h2>📋 Project Overview</h2>
+        <p>This system predicts the probability of a client defaulting on a loan using machine learning. It includes:</p>
+        <ul style="margin: 15px 0 15px 30px;">
+            <li>Complete ML pipeline (Data Engineering → Feature Engineering → Training → Evaluation)</li>
+            <li>REST API with FastAPI (7 endpoints)</li>
+            <li>Interactive Streamlit Dashboard</li>
+            <li>Docker containerization for deployment</li>
+            <li>SHAP-based model explainability</li>
+        </ul>
+        
+        <div class="highlight success">
+            <strong>✅ Best Model:</strong> CatBoost with Optuna hyperparameter tuning achieving AUC = 0.786
+        </div>
+    </div>
+
+    <!-- Section 2: Dashboard Home -->
+    <div class="section">
+        <h2>🎯 Dashboard - Prediction Interface</h2>
+        <p>The main prediction interface allows users to input client information and get instant risk assessment.</p>
+        
+        <img src="01_dashboard_home.png" alt="Dashboard Home" class="screenshot">
+        <p class="screenshot-caption">Figure 1: Dashboard home page with client input form</p>
+        
+        <h3>Features:</h3>
+        <ul style="margin: 15px 0 15px 30px;">
+            <li><strong>External Source Scores:</strong> Three external credit scores (0-1 scale)</li>
+            <li><strong>Financial Information:</strong> Income, credit amount, annuity</li>
+            <li><strong>Personal Information:</strong> Age, employment years</li>
+            <li><strong>Real-time API Status:</strong> Shows connection status and threshold</li>
+        </ul>
+    </div>
+
+    <!-- Section 3: Feature Importance -->
+    <div class="section">
+        <h2>📊 Feature Importance Analysis</h2>
+        <p>SHAP-based feature importance shows which features have the most impact on predictions.</p>
+        
+        <img src="02_feature_importance.png" alt="Feature Importance" class="screenshot">
+        <p class="screenshot-caption">Figure 2: Top 20 most important features (SHAP values)</p>
+        
+        <h3>Top 5 Features:</h3>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Feature</th>
+                <th>Importance</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>FLAG_DOCUMENT_15</td>
+                <td>6.42</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>REG_REGION_NOT_LIVE_REGION</td>
+                <td>4.08</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>AMT_REQ_CREDIT_BUREAU_WEEK</td>
+                <td>2.96</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>INS_PAYMENT_DIFF_MEAN</td>
+                <td>2.73</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>NAME_EDUCATION_TYPE</td>
+                <td>2.67</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Section 4: Model Info -->
+    <div class="section">
+        <h2>ℹ️ Model Information</h2>
+        <p>Detailed information about the deployed model and its configuration.</p>
+        
+        <img src="03_model_info.png" alt="Model Info" class="screenshot">
+        <p class="screenshot-caption">Figure 3: Model information and configuration</p>
+        
+        <h3>Model Specifications:</h3>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Model Type</td>
+                <td>CatBoostClassifier</td>
+            </tr>
+            <tr>
+                <td>ROC-AUC</td>
+                <td>0.786</td>
+            </tr>
+            <tr>
+                <td>Features</td>
+                <td>102</td>
+            </tr>
+            <tr>
+                <td>Optimal Threshold</td>
+                <td>0.35</td>
+            </tr>
+            <tr>
+                <td>Recall</td>
+                <td>72%</td>
+            </tr>
+        </table>
+        
+        <div class="highlight info">
+            <strong>ℹ️ Threshold Optimization:</strong> The 0.35 threshold is optimized for business costs, balancing the cost of false negatives ($10,000 for bad loans) against false positives ($500 for rejected good customers).
+        </div>
+    </div>
+
+    <!-- Section 5: API Documentation -->
+    <div class="section">
+        <h2>📡 API Documentation</h2>
+        <p>The system exposes a REST API with 7 endpoints for integration.</p>
+        
+        <img src="api_docs.png" alt="API Documentation" class="screenshot">
+        <p class="screenshot-caption">Figure 4: Swagger API documentation</p>
+        
+        <h3>Available Endpoints:</h3>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>Endpoint</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/</td>
+                <td>Health check</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/info</td>
+                <td>Model information</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/threshold</td>
+                <td>Threshold configuration</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/features</td>
+                <td>Feature importance</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/predict</td>
+                <td>Single prediction</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/predict/batch</td>
+                <td>Batch predictions</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/explain</td>
+                <td>SHAP explanation</td>
+            </tr>
+        </table>
+        
+        <h3>Example API Call:</h3>
+        <div class="code-block">
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "features": {
+      "EXT_SOURCE_1": 0.5,
+      "EXT_SOURCE_2": 0.6,
+      "AMT_CREDIT": 500000,
+      "AMT_INCOME_TOTAL": 150000
+    }
+  }'
+        </div>
+        
+        <h3>Example Response:</h3>
+        <div class="code-block">
+{
+  "client_id": "client_001",
+  "default_probability": 0.232554,
+  "prediction": 0,
+  "risk_level": "LOW-MEDIUM",
+  "threshold": 0.35,
+  "confidence": "Medium"
+}
+        </div>
+    </div>
+
+    <!-- Section 6: Docker Deployment -->
+    <div class="section">
+        <h2>🐳 Docker Deployment</h2>
+        <p>The application is fully containerized with Docker Compose.</p>
+        
+        <h3>Running Containers:</h3>
+        <table>
+            <tr>
+                <th>Container</th>
+                <th>Port</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>credit-risk-api</td>
+                <td>8000</td>
+                <td>✅ Healthy</td>
+            </tr>
+            <tr>
+                <td>credit-risk-frontend</td>
+                <td>8501</td>
+                <td>✅ Healthy</td>
+            </tr>
+        </table>
+        
+        <h3>Quick Commands:</h3>
+        <div class="code-block">
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+        </div>
+    </div>
+
+    <!-- Section 7: Security -->
+    <div class="section">
+        <h2>🔒 Security Audit Results</h2>
+        <table>
+            <tr>
+                <th>Test</th>
+                <th>Result</th>
+            </tr>
+            <tr>
+                <td>SQL Injection</td>
+                <td>✅ PASS</td>
+            </tr>
+            <tr>
+                <td>XSS Protection</td>
+                <td>✅ PASS</td>
+            </tr>
+            <tr>
+                <td>Input Validation</td>
+                <td>✅ PASS</td>
+            </tr>
+            <tr>
+                <td>Container Isolation</td>
+                <td>✅ PASS</td>
+            </tr>
+            <tr>
+                <td>Sensitive Files</td>
+                <td>✅ PASS</td>
+            </tr>
+        </table>
+        
+        <div class="highlight">
+            <strong>Overall Security Score: 8/10</strong> - Safe for demo and development use.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>🏦 Credit Risk Prediction System v2.0</p>
+        <p>Built with ❤️ by 7afnawi for Hefny</p>
+        <p>March 2026</p>
+    </div>
+</body>
+</html>

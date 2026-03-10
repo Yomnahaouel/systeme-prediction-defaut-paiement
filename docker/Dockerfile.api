@@ -1,0 +1,46 @@
+# ══════════════════════════════════════════════════════════════════════
+# Dockerfile.api — Credit Risk Prediction API
+# ══════════════════════════════════════════════════════════════════════
+# Uses pip cache mount for FAST rebuilds!
+#
+# Author: 7afnawi for Hefny
+# ══════════════════════════════════════════════════════════════════════
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first (for Docker layer caching)
+COPY requirements-api.txt .
+
+# Install Python packages with cache mount for speed
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir -r requirements-api.txt
+
+# Copy application code
+COPY config.py .
+COPY api/ ./api/
+COPY src/ ./src/
+
+# Models will be mounted as volume, but copy fallback
+COPY models/ ./models/
+
+# Environment
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV API_ENV=production
+
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/ || exit 1
+
+# Run with python -m for reliability
+CMD ["python", "-m", "uvicorn", "api.app_v2:app", "--host", "0.0.0.0", "--port", "8000"]

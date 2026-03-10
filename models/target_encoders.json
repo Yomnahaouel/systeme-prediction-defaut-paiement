@@ -1,0 +1,258 @@
+{
+  "global_mean": 0.08042323167173439,
+  "smoothing": 10,
+  "columns": {
+    "NAME_CONTRACT_TYPE": {
+      "encoding": {
+        "Cash loans": 0.0832409867954879,
+        "Revolving loans": 0.05347887665262159
+      },
+      "feature_name": "NAME_CONTRACT_TYPE_TARGET_ENC",
+      "n_categories": 2,
+      "default_value": 0.08042323167173439
+    },
+    "CODE_GENDER": {
+      "encoding": {
+        "F": 0.06928224352708227,
+        "M": 0.10181071221281336,
+        "XNA": 0.06701935972644532
+      },
+      "feature_name": "CODE_GENDER_TARGET_ENC",
+      "n_categories": 3,
+      "default_value": 0.08042323167173439
+    },
+    "FLAG_OWN_CAR": {
+      "encoding": {
+        "N": 0.08422825514833716,
+        "Y": 0.0730385657930798
+      },
+      "feature_name": "FLAG_OWN_CAR_TARGET_ENC",
+      "n_categories": 2,
+      "default_value": 0.08042323167173439
+    },
+    "FLAG_OWN_REALTY": {
+      "encoding": {
+        "N": 0.08246595212673648,
+        "Y": 0.07952328178155821
+      },
+      "feature_name": "FLAG_OWN_REALTY_TARGET_ENC",
+      "n_categories": 2,
+      "default_value": 0.08042323167173439
+    },
+    "NAME_TYPE_SUITE": {
+      "encoding": {
+        "Children": 0.08489825121607349,
+        "Family": 0.07711705141309164,
+        "Group of people": 0.0475580828017205,
+        "Other_A": 0.0893932281133059,
+        "Other_B": 0.09762845327666184,
+        "Spouse, partner": 0.07332463376061306,
+        "Unaccompanied": 0.08130777854131642
+      },
+      "feature_name": "NAME_TYPE_SUITE_TARGET_ENC",
+      "n_categories": 7,
+      "default_value": 0.08059268853015095
+    },
+    "NAME_INCOME_TYPE": {
+      "encoding": {
+        "Businessman": 0.06701935972644532,
+        "Commercial associate": 0.0735970076061419,
+        "Maternity leave": 0.07311202879248581,
+        "Pensioner": 0.056389013956725485,
+        "State servant": 0.05577850397843556,
+        "Student": 0.047307783336314344,
+        "Unemployed": 0.17526451979483398,
+        "Working": 0.0951137651440637
+      },
+      "feature_name": "NAME_INCOME_TYPE_TARGET_ENC",
+      "n_categories": 8,
+      "default_value": 0.08042323167173439
+    },
+    "NAME_EDUCATION_TYPE": {
+      "encoding": {
+        "Academic degree": 0.05011756435325955,
+        "Higher education": 0.05146659737676006,
+        "Incomplete higher": 0.08331938270216555,
+        "Lower secondary": 0.11669212218844988,
+        "Secondary / secondary special": 0.08960406242185642
+      },
+      "feature_name": "NAME_EDUCATION_TYPE_TARGET_ENC",
+      "n_categories": 5,
+      "default_value": 0.08042323167173439
+    },
+    "NAME_FAMILY_STATUS": {
+      "encoding": {
+        "Civil marriage": 0.10321015530699089,
+        "Married": 0.07415557179262758,
+        "Separated": 0.08562689964700555,
+        "Single / not married": 0.09834529984461737,
+        "Unknown": 0.07311202879248581,
+        "Widow": 0.058232053988493654
+      },
+      "feature_name": "NAME_FAMILY_STATUS_TARGET_ENC",
+      "n_categories": 6,
+      "default_value": 0.08042323167173439
+    },
+    "NAME_HOUSING_TYPE": {
+      "encoding": {
+        "Co-op apartment": 0.0741843013196556,
+        "House / apartment": 0.07821643986231508,
+        "Municipal apartment": 0.0806509497780763,
+        "Office apartment": 0.06498045792507685,
+        "Rented apartment": 0.11663785377892806,
+        "With parents": 0.11246548687176199
+      },
+      "feature_name": "NAME_HOUSING_TYPE_TARGET_ENC",
+      "n_categories": 6,
+      "default_value": 0.08042323167173439
+    },
+    "OCCUPATION_TYPE": {
+      "encoding": {
+        "Accountants": 0.05091459752065709,
+        "Cleaning staff": 0.09310424200395413,
+        "Cooking staff": 0.10674076879005322,
+        "Core staff": 0.06056302245351005,
+        "Drivers": 0.11152599853836798,
+        "HR staff": 0.08111746414820321,
+        "High skill tech staff": 0.06571236939117168,
+        "IT staff": 0.04974356098185789,
+        "Laborers": 0.10291742937111314,
+        "Low-skill Laborers": 0.1624072455441632,
+        "Managers": 0.06241609448275799,
+        "Medicine staff": 0.07170944668266259,
+        "Private service staff": 0.07315655323525466,
+        "Realty agents": 0.093351412916819,
+        "Sales staff": 0.09696390584192188,
+        "Secretaries": 0.049009682670880676,
+        "Security staff": 0.09896183188321522,
+        "Waiters/barmen staff": 0.11065882012451123
+      },
+      "feature_name": "OCCUPATION_TYPE_TARGET_ENC",
+      "n_categories": 18,
+      "default_value": 0.08697401958592317
+    },
+    "WEEKDAY_APPR_PROCESS_START": {
+      "encoding": {
+        "FRIDAY": 0.0796206316081406,
+        "MONDAY": 0.07945143103827128,
+        "SATURDAY": 0.07619107245938538,
+        "SUNDAY": 0.08347134593104259,
+        "THURSDAY": 0.08241470122175087,
+        "TUESDAY": 0.08227402964589141,
+        "WEDNESDAY": 0.08011278393008678
+      },
+      "feature_name": "WEEKDAY_APPR_PROCESS_START_TARGET_ENC",
+      "n_categories": 7,
+      "default_value": 0.08042323167173439
+    },
+    "ORGANIZATION_TYPE": {
+      "encoding": {
+        "Advertising": 0.09427146458382062,
+        "Agriculture": 0.12242540412615467,
+        "Bank": 0.056461673522749306,
+        "Business Entity Type 1": 0.08796556437192554,
+        "Business Entity Type 2": 0.07978769849027993,
+        "Business Entity Type 3": 0.09164202326652637,
+        "Cleaning": 0.05763988358662642,
+        "Construction": 0.10603944168488533,
+        "Culture": 0.05522106111169361,
+        "Electricity": 0.08770557791486376,
+        "Emergency": 0.07600180090478562,
+        "Government": 0.06971106591352005,
+        "Hotel": 0.07738367208525655,
+        "Housing": 0.0773357644669524,
+        "Industry: type 1": 0.11623528070593397,
+        "Industry: type 10": 0.05154949476335268,
+        "Industry: type 11": 0.061302104765746206,
+        "Industry: type 12": 0.04877220918868389,
+        "Industry: type 13": 0.21497156728582756,
+        "Industry: type 2": 0.11640211197015768,
+        "Industry: type 3": 0.09239866157222316,
+        "Industry: type 4": 0.1305485911406176,
+        "Industry: type 5": 0.06521653567938773,
+        "Industry: type 6": 0.06443686845419085,
+        "Industry: type 7": 0.07730248242955032,
+        "Industry: type 8": 0.04232801666933389,
+        "Industry: type 9": 0.07447705545376213,
+        "Insurance": 0.060032556282441106,
+        "Kindergarten": 0.06332233773829661,
+        "Legal Services": 0.07843557184753167,
+        "Medicine": 0.07053561677877988,
+        "Military": 0.05634038719452891,
+        "Mobile": 0.07165718909527585,
+        "Other": 0.07316368130574974,
+        "Police": 0.049117291716271966,
+        "Postal": 0.0796084646334347,
+        "Realtor": 0.10430034379486537,
+        "Religion": 0.06014107722391146,
+        "Restaurant": 0.11458882945452006,
+        "School": 0.05823137099829028,
+        "Security": 0.10528365599544076,
+        "Security Ministries": 0.04782582141774102,
+        "Self-employed": 0.10122480807011722,
+        "Services": 0.06826516485904059,
+        "Telecom": 0.06761539528770583,
+        "Trade: type 1": 0.10212741996580567,
+        "Trade: type 2": 0.06781520077248132,
+        "Trade: type 3": 0.11401936369621407,
+        "Trade: type 4": 0.04232801666933389,
+        "Trade: type 5": 0.07517634652988932,
+        "Trade: type 6": 0.04597454268052259,
+        "Trade: type 7": 0.10223587612699586,
+        "Transport: type 1": 0.07044874660587673,
+        "Transport: type 2": 0.08327536318071184,
+        "Transport: type 3": 0.12864404830085233,
+        "Transport: type 4": 0.07799122400423841,
+        "University": 0.05001429836728832,
+        "XNA": 0.056541536214261424
+      },
+      "feature_name": "ORGANIZATION_TYPE_TARGET_ENC",
+      "n_categories": 58,
+      "default_value": 0.08042323167173439
+    },
+    "FONDKAPREMONT_MODE": {
+      "encoding": {
+        "not specified": 0.06792995749949061,
+        "org spec account": 0.06624124806806445,
+        "reg oper account": 0.06857806632516975,
+        "reg oper spec account": 0.06680227243070136
+      },
+      "feature_name": "FONDKAPREMONT_MODE_TARGET_ENC",
+      "n_categories": 4,
+      "default_value": 0.06818401469024839
+    },
+    "HOUSETYPE_MODE": {
+      "encoding": {
+        "block of flats": 0.06741946750832582,
+        "specific housing": 0.11048498046865582,
+        "terraced house": 0.09563087281574814
+      },
+      "feature_name": "HOUSETYPE_MODE_TARGET_ENC",
+      "n_categories": 3,
+      "default_value": 0.06810135155937318
+    },
+    "WALLSMATERIAL_MODE": {
+      "encoding": {
+        "Block": 0.06606488882020921,
+        "Mixed": 0.06860565530360631,
+        "Monolithic": 0.0357308436838703,
+        "Others": 0.09233157275161213,
+        "Panel": 0.06413259556571196,
+        "Stone, brick": 0.07188591289687583,
+        "Wooden": 0.089848680029524
+      },
+      "feature_name": "WALLSMATERIAL_MODE_TARGET_ENC",
+      "n_categories": 7,
+      "default_value": 0.06853767540706941
+    },
+    "EMERGENCYSTATE_MODE": {
+      "encoding": {
+        "No": 0.06826258165932875,
+        "Yes": 0.08388625891807777
+      },
+      "feature_name": "EMERGENCYSTATE_MODE_TARGET_ENC",
+      "n_categories": 2,
+      "default_value": 0.0684835575267719
+    }
+  }
+}
