@@ -102,8 +102,14 @@ This project predicts the probability of a client defaulting on a loan using mac
 git clone <repo-url>
 cd systeme-prediction-defaut-paiement
 
+# IMPORTANT: add a trained model first (see docs/MODEL_ARTIFACTS.md)
+# Expected examples: models/catboost_optimized.joblib or models/best_model.joblib
+
 # Start all services
 docker-compose up -d
+
+# Check API readiness
+curl http://localhost:8000/ready
 
 # Access:
 # - Dashboard: http://localhost:8501
@@ -121,6 +127,9 @@ source venv/bin/activate  # Linux/Mac
 # Install dependencies
 pip install -r requirements.txt
 
+# Add or generate a trained model before starting predictions
+# See docs/MODEL_ARTIFACTS.md
+
 # Start API
 uvicorn api.app_v2:app --host 0.0.0.0 --port 8000 --reload
 
@@ -136,7 +145,8 @@ streamlit run frontend/app.py
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/` | Health check |
+| GET | `/` | Liveness/status check |
+| GET | `/ready` | Readiness check; returns 503 if model/features are missing |
 | GET | `/info` | Model information |
 | GET | `/threshold` | Threshold configuration |
 | GET | `/features?top_n=20` | Top feature importance |
@@ -180,6 +190,8 @@ Visit **http://localhost:8000/docs** for Swagger UI.
 ---
 
 ## 🤖 Model Details
+
+> **Model artifact note:** The trained `.joblib` model is required for real predictions and may be excluded from GitHub because of size/reproducibility constraints. See [docs/MODEL_ARTIFACTS.md](docs/MODEL_ARTIFACTS.md) for the expected filenames and regeneration steps.
 
 ### Performance Comparison
 
@@ -268,7 +280,10 @@ systeme-prediction-defaut-paiement/
 # All tests
 pytest tests/ -v
 
-# Specific test
+# API tests without starting a server
+pytest tests/test_api.py -v
+
+# Model artifact tests; require a real .joblib file in models/
 pytest tests/test_model.py -v
 ```
 
@@ -311,6 +326,8 @@ See [SECURITY_AUDIT.md](SECURITY_AUDIT.md) for full report.
 - ✅ Input validation (Pydantic)
 - ✅ No SQL injection (no database)
 - ✅ Container isolation
+- ✅ Deployment readiness endpoint (`/ready`)
+- ✅ CORS origins configurable with `CORS_ALLOW_ORIGINS`
 - ⚠️ Add rate limiting for production
 - ⚠️ Add authentication for production
 

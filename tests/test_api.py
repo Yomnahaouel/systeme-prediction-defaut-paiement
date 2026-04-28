@@ -1,46 +1,79 @@
 """
-API Tests - Unit tests for the Credit Risk API
-Run with: pytest tests/test_api.py -v
+API Tests - Unit tests for the Credit Risk API.
 
-Author: 7afnawi for Hefny
+These tests use FastAPI's TestClient instead of requiring a running
+localhost server, so they can run reliably in CI and local development.
 """
 
-import pytest
-import requests
-import json
-from typing import Dict, Any
+import numpy as np
+import pandas as pd
+from fastapi.testclient import TestClient
 
-API_URL = "http://localhost:8000"
+import api.app_v2 as app_module
+
+client = TestClient(app_module.app)
+
+
+class DummyModel:
+    """Minimal model stub with a predict_proba API."""
+
+    def predict_proba(self, X):
+        # Higher risk when credit/income and annuity/income are high,
+        # lower risk when external scores are high.
+        credit = float(X.get("AMT_CREDIT", pd.Series([0])).iloc[0])
+        income = max(float(X.get("AMT_INCOME_TOTAL", pd.Series([1])).iloc[0]), 1.0)
+        annuity = float(X.get("AMT_ANNUITY", pd.Series([0])).iloc[0])
+        ext_cols = [c for c in ["EXT_SOURCE_1", "EXT_SOURCE_2", "EXT_SOURCE_3"] if c in X]
+        ext_mean = float(X[ext_cols].mean(axis=1).iloc[0]) if ext_cols else 0.5
+        score = 0.12 + 0.04 * (credit / income) + 0.6 * (annuity / income) - 0.25 * ext_mean
+        proba = min(max(score, 0.01), 0.99)
+        return np.array([[1 - proba, proba]])
+
+
+def setup_module():
+    app_module.model = DummyModel()
+    app_module.ensemble_model = None
+    app_module.selected_features = [
+        "AMT_CREDIT",
+        "AMT_INCOME_TOTAL",
+        "AMT_ANNUITY",
+        "EXT_SOURCE_1",
+        "EXT_SOURCE_2",
+        "EXT_SOURCE_3",
+        "DAYS_BIRTH",
+        "DAYS_EMPLOYED",
+    ]
+    app_module.threshold_config = {
+        "optimal_threshold": 0.35,
+        "cost_fn": 10000,
+        "cost_fp": 500,
+        "metrics": {"auc": 0.786},
+    }
+    app_module.feature_importance = pd.DataFrame(
+        {
+            "feature": ["EXT_SOURCE_2", "AMT_CREDIT"],
+            "importance": [0.5, 0.3],
+        }
+    )
 
 
 class TestAPIHealth:
-    """Test API health endpoints."""
-    
     def test_health_check(self):
-        """Test that API is running."""
-        response = requests.get(f"{API_URL}/")
+        response = client.get("/")
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "healthy"
-    
-    def test_model_loaded(self):
-        """Test that model is loaded."""
-        response = requests.get(f"{API_URL}/")
-        data = response.json()
-        assert data["model_loaded"] == True
-    
-    def test_features_loaded(self):
-        """Test that features are loaded."""
-        response = requests.get(f"{API_URL}/")
-        data = response.json()
-        assert data["features_loaded"] == True
+        assert data["model_loaded"] is True
+        assert data["features_loaded"] is True
+
+    def test_readiness_check(self):
+        response = client.get("/ready")
+        assert response.status_code == 200
+        assert response.json()["status"] == "ready"
 
 
 class TestPredictions:
-    """Test prediction endpoints."""
-    
     def test_predict_valid_input(self):
-        """Test prediction with valid input."""
         features = {
             "AMT_CREDIT": 500000,
             "AMT_INCOME_TOTAL": 150000,
@@ -49,125 +82,51 @@ class TestPredictions:
             "EXT_SOURCE_2": 0.6,
             "EXT_SOURCE_3": 0.4,
         }
-        
-        response = requests.post(
-            f"{API_URL}/predict",
-            json={"features": features}
-        )
-        
+        response = client.post("/predict", json={"features": features})
         assert response.status_code == 200
         data = response.json()
-        
-        assert "default_probability" in data
-        assert "prediction" in data
-        assert "risk_level" in data
         assert 0 <= data["default_probability"] <= 1
         assert data["prediction"] in [0, 1]
-        assert data["risk_level"] in ["LOW", "MEDIUM", "HIGH", "VERY HIGH"]
-    
-    def test_predict_low_risk_client(self):
-        """Test that good client gets low risk."""
-        features = {
-            "AMT_CREDIT": 200000,
-            "AMT_INCOME_TOTAL": 300000,
-            "AMT_ANNUITY": 10000,
-            "EXT_SOURCE_1": 0.9,
-            "EXT_SOURCE_2": 0.85,
-            "EXT_SOURCE_3": 0.8,
-            "DAYS_BIRTH": -45 * 365,
-            "DAYS_EMPLOYED": -15 * 365,
+        assert data["risk_level"] in ["LOW", "LOW-MEDIUM", "MEDIUM", "HIGH", "VERY HIGH"]
+
+    def test_predict_rejects_empty_features(self):
+        response = client.post("/predict", json={"features": {}})
+        assert response.status_code == 422
+
+    def test_predict_rejects_non_numeric_features(self):
+        response = client.post("/predict", json={"features": {"AMT_CREDIT": "bad"}})
+        assert response.status_code == 422
+
+    def test_predict_batch(self):
+        payload = {
+            "clients": [
+                {"AMT_CREDIT": 200000, "AMT_INCOME_TOTAL": 300000, "AMT_ANNUITY": 10000},
+                {"AMT_CREDIT": 800000, "AMT_INCOME_TOTAL": 50000, "AMT_ANNUITY": 50000},
+            ]
         }
-        
-        response = requests.post(
-            f"{API_URL}/predict",
-            json={"features": features}
-        )
-        
-        data = response.json()
-        assert data["default_probability"] < 0.5
-    
-    def test_predict_high_risk_client(self):
-        """Test that risky client gets high risk."""
-        features = {
-            "AMT_CREDIT": 800000,
-            "AMT_INCOME_TOTAL": 50000,
-            "AMT_ANNUITY": 50000,
-            "EXT_SOURCE_1": 0.1,
-            "EXT_SOURCE_2": 0.15,
-            "EXT_SOURCE_3": 0.1,
-            "DAYS_BIRTH": -20 * 365,
-            "DAYS_EMPLOYED": -1 * 365,
-        }
-        
-        response = requests.post(
-            f"{API_URL}/predict",
-            json={"features": features}
-        )
-        
-        data = response.json()
-        assert data["default_probability"] > 0.3
-    
-    def test_predict_empty_features(self):
-        """Test prediction with empty features."""
-        response = requests.post(
-            f"{API_URL}/predict",
-            json={"features": {}}
-        )
-        
-        # Empty features should return validation error
-        assert response.status_code in [200, 422]
-    
-    def test_predict_missing_features(self):
-        """Test prediction with partial features."""
-        features = {"AMT_CREDIT": 500000}
-        
-        response = requests.post(
-            f"{API_URL}/predict",
-            json={"features": features}
-        )
-        
+        response = client.post("/predict/batch", json=payload)
         assert response.status_code == 200
+        data = response.json()
+        assert data["total_clients"] == 2
+        assert len(data["predictions"]) == 2
+
+    def test_predict_batch_rejects_too_many_clients(self):
+        payload = {"clients": [{"AMT_CREDIT": 100000}] * 101}
+        response = client.post("/predict/batch", json=payload)
+        assert response.status_code == 422
 
 
 class TestModelInfo:
-    """Test model info endpoint."""
-    
     def test_get_model_info(self):
-        """Test model info endpoint."""
-        response = requests.get(f"{API_URL}/info")
+        response = client.get("/info")
         assert response.status_code == 200
-        
         data = response.json()
         assert "model_type" in data
-        assert "n_model_features" in data or "n_features" in data
+        assert data["n_features"] > 0
 
-
-class TestSecurity:
-    """Test security aspects."""
-    
-    def test_invalid_json(self):
-        """Test handling of invalid JSON."""
-        response = requests.post(
-            f"{API_URL}/predict",
-            data="not json",
-            headers={"Content-Type": "application/json"}
-        )
-        assert response.status_code in [400, 422]
-    
-    def test_sql_injection_attempt(self):
-        """Test that SQL injection doesn't crash the API."""
-        features = {
-            "AMT_CREDIT": "'; DROP TABLE users; --",
-        }
-        
-        response = requests.post(
-            f"{API_URL}/predict",
-            json={"features": features}
-        )
-        
-        # Should fail gracefully, not crash
-        assert response.status_code in [200, 400, 422]
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    def test_get_feature_importance(self):
+        response = client.get("/features?top_n=1")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_features"] == 2
+        assert len(data["features"]) == 1

@@ -27,7 +27,7 @@ from datetime import datetime
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 import config
 
@@ -56,10 +56,16 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS for frontend
+def _get_allowed_origins() -> List[str]:
+    """Read CORS origins from env while keeping local demo usage simple."""
+    origins = os.environ.get("CORS_ALLOW_ORIGINS", "http://localhost:8501,http://127.0.0.1:8501")
+    return [origin.strip() for origin in origins.split(",") if origin.strip()]
+
+
+# CORS for frontend. Override with CORS_ALLOW_ORIGINS in production.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_get_allowed_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -162,9 +168,18 @@ def load_artifacts():
 class ClientData(BaseModel):
     """Input: Single client features."""
     features: Dict[str, Optional[float]] = Field(
-        ..., 
+        ...,
+        min_length=1,
         description="Dictionary of feature names to values"
     )
+
+    @field_validator("features")
+    @classmethod
+    def validate_features(cls, features: Dict[str, Optional[float]]) -> Dict[str, Optional[float]]:
+        for name, value in features.items():
+            if value is not None and not np.isfinite(value):
+                raise ValueError(f"Feature '{name}' must be a finite number")
+        return features
     
     class Config:
         json_schema_extra = {
@@ -186,8 +201,21 @@ class BatchClientData(BaseModel):
     """Input: Multiple clients."""
     clients: List[Dict[str, Optional[float]]] = Field(
         ...,
+        min_length=1,
+        max_length=100,
         description="List of client feature dictionaries"
     )
+
+    @field_validator("clients")
+    @classmethod
+    def validate_clients(cls, clients: List[Dict[str, Optional[float]]]) -> List[Dict[str, Optional[float]]]:
+        for index, features in enumerate(clients, start=1):
+            if not features:
+                raise ValueError(f"Client #{index} must contain at least one feature")
+            for name, value in features.items():
+                if value is not None and not np.isfinite(value):
+                    raise ValueError(f"Client #{index} feature '{name}' must be a finite number")
+        return clients
 
 
 class PredictionResponse(BaseModel):
@@ -237,6 +265,9 @@ class FeatureImportanceResponse(BaseModel):
 
 def prepare_features(features_dict: Dict) -> pd.DataFrame:
     """Prepare feature vector from input dict."""
+    if not selected_features:
+        raise HTTPException(status_code=503, detail="Feature list not loaded")
+
     input_dict = {}
     for feat in selected_features:
         value = features_dict.get(feat, 0.0)
@@ -262,23 +293,51 @@ def get_risk_level(proba: float, threshold: float) -> tuple:
         return "VERY HIGH", "High"
 
 
+def is_ready() -> bool:
+    """The API is ready for predictions only when model and feature order are loaded."""
+    return model is not None and bool(selected_features)
+
+
 # ══════════════════════════════════════════════════════════════════════
 # ENDPOINTS
 # ══════════════════════════════════════════════════════════════════════
 
 @app.get("/", tags=["Health"])
 def health_check():
-    """Health check with system status."""
+    """Liveness check with system status.
+
+    This endpoint answers when the API process is alive. Use /ready for
+    deployment health checks that must fail when the model is missing.
+    """
     uptime = (datetime.now() - startup_time).total_seconds() if startup_time else 0
+    ready = is_ready()
     
     return {
-        "status": "healthy",
+        "status": "healthy" if ready else "degraded",
         "version": "2.0.0",
         "model_loaded": model is not None,
+        "features_loaded": bool(selected_features),
         "ensemble_available": ensemble_model is not None,
         "features_count": len(selected_features) if selected_features else 0,
         "threshold": threshold_config.get('optimal_threshold', 0.5) if threshold_config else 0.5,
         "uptime_seconds": round(uptime, 2)
+    }
+
+
+@app.get("/ready", tags=["Health"])
+def readiness_check():
+    """Readiness check for Docker/Kubernetes deployments."""
+    if not is_ready():
+        raise HTTPException(
+            status_code=503,
+            detail="API not ready: trained model and feature list must be available"
+        )
+
+    return {
+        "status": "ready",
+        "model_loaded": True,
+        "features_loaded": True,
+        "features_count": len(selected_features),
     }
 
 
@@ -320,6 +379,8 @@ def get_feature_importance(top_n: int = 20):
     """Get top N most important features."""
     if feature_importance is None:
         raise HTTPException(status_code=503, detail="Feature importance not available")
+    if top_n < 1 or top_n > 100:
+        raise HTTPException(status_code=422, detail="top_n must be between 1 and 100")
     
     top_features = feature_importance.head(top_n).to_dict('records')
     
@@ -337,8 +398,8 @@ def predict(data: ClientData, use_ensemble: bool = False):
     - **features**: Dictionary of feature name → value
     - **use_ensemble**: Use ensemble model if available (default: False)
     """
-    if model is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
+    if not is_ready():
+        raise HTTPException(status_code=503, detail="Model or feature list not loaded")
     
     # Prepare features
     df = prepare_features(data.features)
@@ -375,8 +436,8 @@ def predict_batch(data: BatchClientData, use_ensemble: bool = False):
     - **clients**: List of feature dictionaries
     - **use_ensemble**: Use ensemble model if available
     """
-    if model is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
+    if not is_ready():
+        raise HTTPException(status_code=503, detail="Model or feature list not loaded")
     
     import time
     start_time = time.time()
@@ -429,8 +490,8 @@ def explain_prediction(data: ClientData):
     
     Returns top factors contributing to the prediction.
     """
-    if model is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
+    if not is_ready():
+        raise HTTPException(status_code=503, detail="Model or feature list not loaded")
     
     # Prepare features
     df = prepare_features(data.features)
